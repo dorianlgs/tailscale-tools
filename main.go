@@ -63,7 +63,7 @@ func main() {
 	fmt.Printf("Visita la URL: %s", funnelUrlString)
 	fmt.Println()
 	fmt.Println()
-	fmt.Printf("Presiona Enter para cerrar túnel y revertir los cambios del config (apache y wordpress)")
+	fmt.Printf("Presiona Enter para cerrar el túnel y revertir los cambios del config (apache y wordpress)")
 	fmt.Println()
 
 	reader := bufio.NewReader(os.Stdin)
