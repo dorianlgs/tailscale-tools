@@ -34,8 +34,7 @@ func main() {
 
 	funnelCmdOutput, err := execute("tailscale", "funnel", "--bg", string(*port))
 	if err != nil {
-		msg := fmt.Sprintf("Error: %s", err.Error())
-		panic(msg)
+		panic(err)
 	}
 
 	rxRelaxed := xurls.Relaxed
@@ -58,7 +57,10 @@ func main() {
 
 	fmt.Println()
 
-	reiniciar_apache()
+	err = reiniciar_apache()
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Printf("Comparte la URL  %s", funnelUrlString)
 	fmt.Println()
@@ -67,7 +69,10 @@ func main() {
 	fmt.Println()
 
 	reader := bufio.NewReader(os.Stdin)
-	_, _ = reader.ReadString('\n')
+	_, err = reader.ReadString('\n')
+	if err != nil {
+		panic(err)
+	}
 
 	_, err = execute("tailscale", "funnel", "reset")
 	if err != nil {
@@ -84,7 +89,10 @@ func main() {
 		panic(err)
 	}
 
-	reiniciar_apache()
+	err = reiniciar_apache()
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println("Listo")
 }
@@ -92,12 +100,12 @@ func main() {
 func reiniciar_apache() error {
 	_, err := execute("net", "stop", "wampapache64")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	_, err = execute("net", "start", "wampapache64")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil
@@ -111,13 +119,12 @@ func execute(program string, args ...string) (string, error) {
 
 	cmd := exec.Command(program, args...)
 	stdout, err := cmd.Output()
-
-	fmt.Println(string(stdout))
-	fmt.Println()
-
 	if err != nil {
 		return "", err
 	}
+
+	fmt.Println(string(stdout))
+	fmt.Println()
 
 	return string(stdout), nil
 }
