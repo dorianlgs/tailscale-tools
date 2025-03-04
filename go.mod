@@ -2,6 +2,9 @@ module github.com/shujink0/tailscale-tools
 
 go 1.24.0
 
-require mvdan.cc/xurls/v2 v2.6.0
+require golang.org/x/sys v0.28.0
 
-require mvdan.cc/xurls v1.1.0 // indirect
+require (
+	github.com/mvdan/xurls v1.1.0 // indirect
+	mvdan.cc/xurls v1.1.0
+)

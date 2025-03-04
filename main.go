@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"mvdan.cc/xurls"
@@ -15,11 +16,29 @@ import (
 
 func main() {
 
+	isAdmin, err := check_is_admin()
+
+	if err != nil {
+		panic(err)
+	}
+
+	if !isAdmin {
+		panic("Elevated privileges required, Please run as Administrator")
+	}
+
 	port := flag.String("port", "80", "port to forward")
 	host := flag.String("host", "ferreteria.cifu.dev", "host to be replaced")
 	apacheVersion := flag.String("apachev", "2.4.54.2", "apache httpd version of wamp")
 
 	flag.Parse()
+
+	if len(*port) == 0 {
+		panic("port parameter required")
+	}
+
+	if len(*host) == 0 {
+		panic("host parameter required")
+	}
 
 	subDomain := strings.Split(*host, ".")
 
@@ -27,9 +46,17 @@ func main() {
 		panic("did not find subdomain in host parameter")
 	}
 
-	wpConfig := fmt.Sprintf("C:\\wamp64\\www\\%s\\wp-config.php", subDomain[0])
-	vHosts := fmt.Sprintf("C:\\wamp64\\bin\\apache\\apache%s\\conf\\extra\\httpd-vhosts.conf", *apacheVersion)
+	var wpConfig string
+	if runtime.GOOS == "windows" {
+		wpConfig = fmt.Sprintf("C:\\wamp64\\www\\%s\\wp-config.php", subDomain[0])
+	} else if runtime.GOOS == "linux" {
+		wpConfig = fmt.Sprintf("/var/www/%s/wp-config.php", subDomain[0])
+	}
 
+	var vHosts string
+	if runtime.GOOS == "windows" {
+		vHosts = fmt.Sprintf("C:\\wamp64\\bin\\apache\\apache%s\\conf\\extra\\httpd-vhosts.conf", *apacheVersion)
+	}
 	fmt.Println()
 
 	funnelCmdOutput, err := execute("tailscale", "funnel", "--bg", string(*port))
@@ -50,16 +77,20 @@ func main() {
 		panic(err)
 	}
 
-	err = replace_text_in_file(vHosts, *host, funnelUrl.Host)
-	if err != nil {
-		panic(err)
+	if runtime.GOOS == "windows" {
+		err = replace_text_in_file(vHosts, *host, funnelUrl.Host)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	fmt.Println()
 
-	err = reiniciar_apache()
-	if err != nil {
-		panic(err)
+	if runtime.GOOS == "windows" {
+		err = reiniciar_apache()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	fmt.Printf("Comparte la URL  %s", funnelUrlString)
@@ -84,14 +115,18 @@ func main() {
 		panic(err)
 	}
 
-	err = replace_text_in_file(vHosts, funnelUrl.Host, *host)
-	if err != nil {
-		panic(err)
+	if runtime.GOOS == "windows" {
+		err = replace_text_in_file(vHosts, funnelUrl.Host, *host)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	err = reiniciar_apache()
-	if err != nil {
-		panic(err)
+	if runtime.GOOS == "windows" {
+		err = reiniciar_apache()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	fmt.Println("Listo")
