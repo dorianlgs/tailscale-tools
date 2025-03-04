@@ -60,7 +60,7 @@ func main() {
 
 	reiniciar_apache()
 
-	fmt.Printf("Visita la URL: %s", funnelUrlString)
+	fmt.Printf("Comparte la URL  %s", funnelUrlString)
 	fmt.Println()
 	fmt.Println()
 	fmt.Printf("Presiona Enter para cerrar el túnel y revertir los cambios del config (apache y wordpress)")
@@ -132,7 +132,7 @@ func replace_text_in_file(file_path string, find, replace string) error {
 	file_name := filepath.Base(file_path)
 
 	fmt.Println()
-	fmt.Printf("Reemplazando %s find '%s' replace '%s'", file_name, find, replace)
+	fmt.Printf("Reemplazando en archivo %s el texto '%s' por '%s'", file_name, find, replace)
 	fmt.Println()
 
 	newContents := strings.Replace(string(read), find, replace, -1)
