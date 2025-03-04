@@ -24,7 +24,7 @@ func main() {
 	subDomain := strings.Split(*host, ".")
 
 	if len(subDomain) == 0 {
-		panic("not find  subdomain in host")
+		panic("did not find subdomain in host parameter")
 	}
 
 	wpConfig := fmt.Sprintf("C:\\wamp64\\www\\%s\\wp-config.php", subDomain[0])
@@ -106,7 +106,7 @@ func reiniciar_apache() error {
 
 func execute(program string, args ...string) (string, error) {
 
-	fmt.Printf("Executing %s with args: %s", program, strings.Join(args, " "))
+	fmt.Printf("Ejecutando %s with args: %s", program, strings.Join(args, " "))
 	fmt.Println()
 
 	cmd := exec.Command(program, args...)
@@ -132,7 +132,7 @@ func replace_text_in_file(file_path string, find, replace string) error {
 	file_name := filepath.Base(file_path)
 
 	fmt.Println()
-	fmt.Printf("Replacing %s find '%s' replace '%s'", file_name, find, replace)
+	fmt.Printf("Reemplazando %s find '%s' replace '%s'", file_name, find, replace)
 	fmt.Println()
 
 	newContents := strings.Replace(string(read), find, replace, -1)
