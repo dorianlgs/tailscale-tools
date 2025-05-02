@@ -35,8 +35,5 @@ func check_is_admin() (bool, error) {
 	// Also note that an admin is _not_ necessarily considered
 	// elevated.
 	// For elevation see https://github.com/mozey/run-as-admin
-	return token.IsElevated() && member, nil
-
-	//fmt.Println("Admin?", member)
-
+	return member, nil
 }
