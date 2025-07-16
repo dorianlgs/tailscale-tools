@@ -24,7 +24,7 @@ A Go application that automates the setup of Tailscale funnel tunnels for WordPr
 
 ```bash
 # Clone the repository
-git clone https://github.com/shujink0/tailscale-tools.git
+git clone https://github.com/dorianlgs/tailscale-tools.git
 cd tailscale-tools
 
 # Build the application
