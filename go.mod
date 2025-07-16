@@ -1,4 +1,4 @@
-module github.com/shujink0/tailscale-tools
+module github.com/dorianlgs/tailscale-tools
 
 go 1.24.0
 
